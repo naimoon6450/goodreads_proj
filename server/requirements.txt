@@ -1,0 +1,7 @@
+flask
+betterreads
+backports-datetime-fromisoformat
+xmltodict
+requests
+rauth
+python-dotenv
