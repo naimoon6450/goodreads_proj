@@ -1,0 +1,23 @@
+{
+  "name": "goodreads_proj",
+  "version": "1.0.0",
+  "description": "Goodreads Book Recommendation",
+  "main": "index.js",
+  "dependencies": {
+    "create-react-app": "^3.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/naimoon6450/goodreads_proj.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/naimoon6450/goodreads_proj/issues"
+  },
+  "homepage": "https://github.com/naimoon6450/goodreads_proj#readme"
+}
