@@ -8,8 +8,8 @@ dev_key = os.getenv('GOODREADS_DEV_KEY')
 dev_sec = os.getenv('GOODREADS_SECRET_KEY')
 # the goodread client
 gc = client.GoodreadsClient(dev_key, dev_sec)
-goodreads = client.GoodreadsClient(dev_key, dev_sec)
-gr_service = goodreads.auth_attempt()
+# goodreads = client.GoodreadsClient(dev_key, dev_sec)
+# gr_service = goodreads.auth_attempt()
 
 def authHelper():
     if (hasattr(gc, 'session')):
@@ -58,14 +58,15 @@ def authorized():
 
 @app.route('/friends')
 def friends():
+    authHelper()
     # user_name = 'naimz_sauce'
     # authenticate again but with tokens this time
-    user_id = goodreads.user(username='naimoon1993').gid
-    gc_req = goodreads.request_oauth(
+    user_id = gc.user(username='naimoon1993').gid
+    gc_req = gc.request_oauth(
         'friend/user.xml', {'id': 76756345})
 
-    hoss_books = goodreads.request_oauth(
-        'review/list?v=2', {'id': '19666582', 'key': dev_key})
+    # hoss_books = gc.request_oauth(
+    #     'review/list?v=2', {'id': '19666582', 'key': dev_key})
     info_arr = []
     for item in gc_req['friends']['user']:
         dict_user = {}
