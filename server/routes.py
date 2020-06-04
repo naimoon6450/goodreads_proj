@@ -63,13 +63,13 @@ def authorized():
 
 @app.route('/friends')
 def friends():
-    authHelper()
-    print('from friends page',goodreads.session.access_token)
+    gc.authenticate()
+    # print('from friends page',goodreads.session.access_token)
     # user_name = 'naimz_sauce'
     # authenticate again but with tokens this time
-    user_id = goodreads.user(username='naimoon1993').gid
-    print('self init', goodreads)
-    gc_req = goodreads.auth_user()
+    # user_id = goodreads.user(username='naimoon1993').gid
+    print('self init', gc)
+    gc_req = gc.auth_user('friend/user.xml', {'id': 76756345})
     print(gc_req)
 
     # hoss_books = goodreads.request_oauth(
