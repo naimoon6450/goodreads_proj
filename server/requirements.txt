@@ -1,5 +1,4 @@
 flask
-betterreads
 backports-datetime-fromisoformat
 xmltodict
 requests

@@ -7,38 +7,46 @@ from rauth.utils import parse_utf8_qsl
 dev_key = os.getenv('GOODREADS_DEV_KEY')
 dev_sec = os.getenv('GOODREADS_SECRET_KEY')
 # the goodread client
-gc = client.GoodreadsClient(dev_key, dev_sec)
-# goodreads = client.GoodreadsClient(dev_key, dev_sec)
+
+# gc = client.GoodreadsClient(dev_key, dev_sec)
+goodreads = client.GoodreadsClient(dev_key, dev_sec)
+
 # gr_service = goodreads.auth_attempt()
 
 def authHelper():
-    if (hasattr(gc, 'session')):
-        gc.authenticate(access_token=gc.session.access_token, access_token_secret=gc.session.access_token_secret)
-    else:
-        gc.authenticate()
+    if (hasattr(goodreads, 'session')):
+        goodreads.authenticate_with_callback(access_token=goodreads.session.access_token, access_token_secret=goodreads.session.access_token_secret)
 
 @app.route("/")
 def index():
+    if (hasattr(goodreads, 'session')):
+        return "Welcome to the App"
+    #     print('from index post auth', goodreads.session.access_token)
+    #     print('from index post auth tok sec', goodreads.session.access_token_secret)
+    # print('req args from index', request.args)
     return render_template('login.html')
 
 @app.route('/goodreads/login')
 def login():
+    # send the url to the method
     oauth_callback = url_for('authorized', _external=True)
     params = {'oauth_callback': oauth_callback}
 
-    r = gr_service.get_raw_request_token(params=dict(params))
-    data = parse_utf8_qsl(r.content)
+    # r = gr_service.get_raw_request_token(params=dict(params))
+    # data = parse_utf8_qsl(r.content)
+    data, redir_uri = goodreads.authenticate_with_callback(params=dict(params))
+    print(redir_uri)
     # sets session for the application
     session['goodreads_oauth'] = (data['oauth_token'],
                                 data['oauth_token_secret'])
     print("Session Created", session['goodreads_oauth'])
-    return redirect(gr_service.get_authorize_url(data['oauth_token'], **params))
+    # return redirect(gr_service.get_authorize_url(data['oauth_token'], **params))
+    return redirect(redir_uri)
 
 @app.route('/goodreads/authorized')
 def authorized():
     request_token, request_token_secret = session.pop('goodreads_oauth')
     # check to make sure the user authorized the request
-    print(request_token, request_token_secret)
     if not request_token:
         flash('You did not authorize the request')
         return redirect(url_for('index'))
@@ -46,26 +54,28 @@ def authorized():
     try:
         # creds = {'request_token': request_token,
         #         'request_token_secret': request_token_secret}
-        # params = {'oauth_verifier': request.args['oauth_verifier']}
-        # sess = gr_service.get_auth_session(params=params, **creds)
-        print(request.args)
+        # params = {'oauth_token': request.args['oauth_token']}
+        # setting the session variables once received here
+        # once the user approves, add tokens to session
+        goodreads.auth_finalize(request_token, request_token_secret)
     except Exception as e:
         flash('There was a problem logging into GoodReads: ' + str(e))
         return redirect(url_for('index'))
 
-    return redirect(url_for('friends'))
+    return redirect(url_for('index'))
 
 
 @app.route('/friends')
 def friends():
     authHelper()
+    # print('from friends page',goodreads.session.access_token)
     # user_name = 'naimz_sauce'
     # authenticate again but with tokens this time
-    user_id = gc.user(username='naimoon1993').gid
-    gc_req = gc.request_oauth(
-        'friend/user.xml', {'id': 76756345})
+    # user_id = goodreads.user(username='naimoon1993').gid
 
-    # hoss_books = gc.request_oauth(
+    gc_req = goodreads.request_oauth('friend/user.xml', {'id': 76756345})
+    # gc_req = gc.request_oauth('friend/user.xml', {'id': 76756345})
+    # hoss_books = goodreads.request_oauth(
     #     'review/list?v=2', {'id': '19666582', 'key': dev_key})
     info_arr = []
     for item in gc_req['friends']['user']:
@@ -77,7 +87,7 @@ def friends():
             dict_user['reviews_written'] = item['reviews_count']
             info_arr.append(dict_user)
 
-    # ids = [friend['id'] for friend in gc_req['friends']['user']]
+    ids = [friend['id'] for friend in gc_req['friends']['user']]
     # return jsonify(hoss_books)
     return jsonify(info_arr)
 
