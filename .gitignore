@@ -5,3 +5,4 @@ venv/
 
 .env
 node_modules
+betterreads_w_auth/
