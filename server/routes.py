@@ -7,8 +7,10 @@ from rauth.utils import parse_utf8_qsl
 dev_key = os.getenv('GOODREADS_DEV_KEY')
 dev_sec = os.getenv('GOODREADS_SECRET_KEY')
 # the goodread client
+
 # gc = client.GoodreadsClient(dev_key, dev_sec)
 goodreads = client.GoodreadsClient(dev_key, dev_sec)
+
 # gr_service = goodreads.auth_attempt()
 
 def authHelper():
