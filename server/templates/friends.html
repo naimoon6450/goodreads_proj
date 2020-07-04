@@ -1,0 +1,7 @@
+<!doctype html>
+<title>Welcome to the Friends</title>
+<h1>Info</h1>
+{% for data in data %}
+{{ data.name, data.friends, data.goodreads_id }}
+<br/>
+{% endfor %}

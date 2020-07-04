@@ -1,0 +1,9 @@
+<!doctype html>
+<title>Welcome to the Home Page</title>
+<h1>Info</h1>
+<a href ="{{ url_for('friends') }}" >Friends Information</a>
+<a href ="{{ url_for('reviews') }}" >Reviews</a>
+<form action="/friends_of_friend" method="post">
+    <input type="text" placeholder="friend ID" value="{{request.form.friendId}}" name="friendId">
+    <input type="submit" value="friend">
+</form>
